@@ -7,7 +7,7 @@
  */
 export default function frac(n, devicePixelRatio) {
   if (devicePixelRatio > 1) {
-    return Math.round(n * devicePixelRatio) / devicePixelRatio
+    return Math.round(n * devicePixelRatio) / devicePixelRatio;
   }
-  return n
+  return n;
 }

@@ -1,8 +1,8 @@
-import getSupportedPropertyName from '../utils/getSupportedPropertyName'
-import find from '../utils/find'
-import getOffsetParent from '../utils/getOffsetParent'
-import getBoundingClientRect from '../utils/getBoundingClientRect'
-import frac from '../utils/frac'
+import getSupportedPropertyName from '../utils/getSupportedPropertyName';
+import find from '../utils/find';
+import getOffsetParent from '../utils/getOffsetParent';
+import getBoundingClientRect from '../utils/getBoundingClientRect';
+import frac from '../utils/frac';
 
 /**
  * @function
@@ -12,14 +12,14 @@ import frac from '../utils/frac'
  * @returns {Object} The data object, properly modified
  */
 export default function computeStyle(data, options) {
-  const { x, y } = options
-  const { popper } = data.offsets
+  const { x, y } = options;
+  const { popper } = data.offsets;
 
   // Remove this legacy support in Popper.js v2
   const legacyGpuAccelerationOption = find(
     data.instance.modifiers,
-    modifier => modifier.name === 'applyStyle',
-  ).gpuAcceleration
+    modifier => modifier.name === 'applyStyle'
+  ).gpuAcceleration;
 
   // gpuAcceleration is `true` by default, so if it's `false` we'll respect
   // that it was set explicitly, otherwise use the dynamic boolean
@@ -29,24 +29,24 @@ export default function computeStyle(data, options) {
       : !options.gpuAcceleration
       ? options.gpuAcceleration
       : ![popper.left, popper.top].some(
-          n => Math.abs(n - frac(n, window.devicePixelRatio)) > 0.001,
-        )
+          n => Math.abs(n - frac(n, window.devicePixelRatio)) > 0.001
+        );
 
-  const offsetParent = getOffsetParent(data.instance.popper)
-  const offsetParentRect = getBoundingClientRect(offsetParent)
+  const offsetParent = getOffsetParent(data.instance.popper);
+  const offsetParentRect = getBoundingClientRect(offsetParent);
 
   // Styles
   const styles = {
     position: popper.position,
-  }
+  };
 
-  const sideA = x === 'bottom' ? 'top' : 'bottom'
-  const sideB = y === 'right' ? 'left' : 'right'
+  const sideA = x === 'bottom' ? 'top' : 'bottom';
+  const sideB = y === 'right' ? 'left' : 'right';
 
   // if gpuAcceleration is set to `true` and transform is supported,
   //  we use `translate3d` to apply the position to the popper we
   // automatically use the supported prefixed version if needed
-  const prefixedProperty = getSupportedPropertyName('transform')
+  const prefixedProperty = getSupportedPropertyName('transform');
 
   // now, let's make a step back and look at this code closely (wtf?)
   // If the content of the popper grows once it's been positioned, it
@@ -57,50 +57,50 @@ export default function computeStyle(data, options) {
   // If we position a popper on top of a reference element, we can set
   // `x` to `top` to make the popper grow towards its top instead of
   // its bottom.
-  let left, top
+  let left, top;
   if (sideA === 'bottom') {
     // when offsetParent is <html> the positioning is relative to the bottom of the screen (excluding the scrollbar)
     // and not the bottom of the html element
     if (offsetParent.nodeName === 'HTML') {
-      top = -offsetParent.clientHeight + popper.bottom
+      top = -offsetParent.clientHeight + popper.bottom;
     } else {
-      top = -offsetParentRect.height + popper.bottom
+      top = -offsetParentRect.height + popper.bottom;
     }
   } else {
-    top = popper.top
+    top = popper.top;
   }
   if (sideB === 'right') {
     if (offsetParent.nodeName === 'HTML') {
-      left = -offsetParent.clientWidth + popper.right
+      left = -offsetParent.clientWidth + popper.right;
     } else {
-      left = -offsetParentRect.width + popper.right
+      left = -offsetParentRect.width + popper.right;
     }
   } else {
-    left = popper.left
+    left = popper.left;
   }
   if (gpuAcceleration && prefixedProperty) {
-    styles[prefixedProperty] = `translate3d(${left}px, ${top}px, 0)`
-    styles[sideA] = 0
-    styles[sideB] = 0
-    styles.willChange = 'transform'
+    styles[prefixedProperty] = `translate3d(${left}px, ${top}px, 0)`;
+    styles[sideA] = 0;
+    styles[sideB] = 0;
+    styles.willChange = 'transform';
   } else {
     // othwerise, we use the standard `top`, `left`, `bottom` and `right` properties
-    const invertTop = sideA === 'bottom' ? -1 : 1
-    const invertLeft = sideB === 'right' ? -1 : 1
-    styles[sideA] = top * invertTop
-    styles[sideB] = left * invertLeft
-    styles.willChange = `${sideA}, ${sideB}`
+    const invertTop = sideA === 'bottom' ? -1 : 1;
+    const invertLeft = sideB === 'right' ? -1 : 1;
+    styles[sideA] = top * invertTop;
+    styles[sideB] = left * invertLeft;
+    styles.willChange = `${sideA}, ${sideB}`;
   }
 
   // Attributes
   const attributes = {
     'x-placement': data.placement,
-  }
+  };
 
   // Update `data` attributes, styles and arrowStyles
-  data.attributes = { ...attributes, ...data.attributes }
-  data.styles = { ...styles, ...data.styles }
-  data.arrowStyles = { ...data.offsets.arrow, ...data.arrowStyles }
+  data.attributes = { ...attributes, ...data.attributes };
+  data.styles = { ...styles, ...data.styles };
+  data.arrowStyles = { ...data.offsets.arrow, ...data.arrowStyles };
 
-  return data
+  return data;
 }
