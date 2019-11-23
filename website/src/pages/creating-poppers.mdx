@@ -1,0 +1,32 @@
+# Creating Poppers
+
+Given the following elements on the document:
+
+```html
+<div id="reference" style="width: 100px; height: 100px; background: teal;">
+  Reference
+</div>
+
+<div id="popper" style="width: 100px; height: 100px; background: tomato;">
+  Popper
+</div>
+```
+
+<div id="reference" style="width: 100px; height: 100px; background: teal;">
+  Reference
+</div>
+<div id="popper" style="width: 100px; height: 100px; background: tomato;">
+  Popper
+</div>
+
+Create a new instance of `Popper` like so:
+
+```js
+const referenceElement = document.getElementById('reference');
+const popperElement = document.getElementById('popper');
+
+new Popper(referenceElement, popperElement);
+```
+
+Once Popper's JavaScript is loaded, the popper element will be centered beneath the reference element by default.
+(TODO: This example isn't very helpful because coincidentally the positions will be identical)
