@@ -2,7 +2,7 @@
 import type { JQueryWrapper, State, Options, Modifier } from './types';
 
 // DOM Utils
-import getElementClientRect from './dom-utils/getElementClientRect';
+import getElementClientRect from './dom-utils/getRectRelativeToOffsetParent';
 import listScrollParents from './dom-utils/listScrollParents';
 import getWindow from './dom-utils/getWindow';
 import addClientRectMargins from './dom-utils/addClientRectMargins';
@@ -45,6 +45,97 @@ export default class Popper {
     popper: HTMLElement | JQueryWrapper,
     options: $Shape<Options> = defaultOptions
   ) {
+    const instance = {};
+
+    let state: $Shape<State> = {
+      placement: 'bottom',
+      orderedModifiers: [],
+      options: defaultOptions,
+      modifiersData: {},
+    };
+
+    // Syncronous and forcefully executed update
+    // it will always be executed even if not necessary, usually NOT needed
+    // use Popper#update instead
+    instance.forceUpdate = () => {
+      const {
+        reference: referenceElement,
+        popper: popperElement,
+      } = state.elements;
+      // Don't proceed if `reference` or `popper` are not valid elements anymore
+      if (!areValidElements(referenceElement, popperElement)) {
+        if (__DEV__) {
+          console.error(INVALID_ELEMENT_ERROR);
+        }
+        return;
+      }
+
+      const isFixed = state.options.strategy === 'fixed';
+
+      // Get initial measurements
+      // these are going to be used to compute the initial popper offsets
+      // and as cache for any modifier that needs them later
+      state.measures = {
+        reference: getElementClientRect(referenceElement, isFixed),
+        // CSS marginsc an be applied to popper elements to quickly
+        // apply offsets dynamically based on some CSS selectors.
+        // For this reason we include margins in this calculation.
+        popper: addClientRectMargins(
+          getElementClientRect(popperElement, isFixed),
+          popperElement
+        ),
+      };
+
+      // Modifiers have the ability to read the current Popper state, included
+      // the popper offsets, and modify it to address specifc cases
+      state.reset = false;
+
+      // Cache the placement in cache to make it available to the modifiers
+      // modifiers will modify this one (rather than the one in options)
+      state.placement = state.options.placement;
+
+      state.orderedModifiers.forEach(
+        modifier =>
+          (state.modifiersData[modifier.name] = {
+            ...modifier.data,
+          })
+      );
+
+      let __debug_loops__ = 0;
+      for (let index = 0; index < state.orderedModifiers.length; index++) {
+        if (__DEV__) {
+          __debug_loops__ += 1;
+          if (__debug_loops__ > 100) {
+            console.error(INFINITE_LOOP_ERROR);
+            break;
+          }
+        }
+
+        if (state.reset === true) {
+          state.reset = false;
+          index = -1;
+          continue;
+        }
+
+        const { fn, enabled, options } = state.orderedModifiers[index];
+
+        if (enabled && typeof fn === 'function') {
+          state = fn((state: State), options);
+        }
+      }
+    };
+
+    // Async and optimistically optimized update
+    // it will not be executed if not necessary
+    // debounced, so that it only runs at most once-per-tick
+    instance.update = debounce(
+      () =>
+        new Promise<State>(success => {
+          instance.forceUpdate();
+          success(state);
+        })
+    );
+
     // Unwrap `reference` and `popper` elements in case they are
     // wrapped by jQuery, otherwise consume them as is
     const referenceElement = unwrapJqueryElement(reference);
