@@ -74,6 +74,10 @@ export function popperGenerator(generatorOptions: PopperGeneratorArgs = {}) {
     const instance = {
       state,
       setOptions(options) {
+        if (state.isCreated) {
+          runModifiersCallback('onDestroy');
+        }
+
         state.options = {
           ...defaultOptions,
           ...options,
@@ -108,10 +112,6 @@ export function popperGenerator(generatorOptions: PopperGeneratorArgs = {}) {
           ];
 
           validateModifiers(uniqueBy(modifiers, ({ name }) => name));
-        }
-
-        if (state.isCreated) {
-          runModifiersCallback('onDestroy');
         }
 
         runModifiersCallback('onLoad');
