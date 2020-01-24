@@ -63,7 +63,7 @@ export type Instance = {|
 |};
 
 export type ModifierArguments<Options: Obj> = {
-  state: $Shape<State>,
+  state: State,
   instance: Instance,
   options: $Shape<Options>,
   name: string,
@@ -74,7 +74,7 @@ export type Modifier<Options> = {|
   phase: ModifierPhases,
   requires?: Array<string>,
   requiresIfExists?: Array<string>,
-  fn: (ModifierArguments<Options>) => ?State,
+  fn: (ModifierArguments<Options>) => State | void,
   effect?: (ModifierArguments<Options>) => ?() => void,
   options?: Obj,
   data?: Obj,
