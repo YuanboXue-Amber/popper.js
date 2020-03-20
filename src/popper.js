@@ -10,6 +10,7 @@ import flip from './modifiers/flip';
 import preventOverflow from './modifiers/preventOverflow';
 import arrow from './modifiers/arrow';
 import hide from './modifiers/hide';
+import maxSize from './modifiers/maxSize';
 
 import detectOverflow from './utils/detectOverflow';
 
@@ -25,6 +26,7 @@ const defaultModifiers = [
   preventOverflow,
   arrow,
   hide,
+  maxSize,
 ];
 
 const createPopper = popperGenerator({ defaultModifiers });

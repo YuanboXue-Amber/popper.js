@@ -1,0 +1,56 @@
+<!DOCTYPE html> <title>Basic Visual Test</title>
+
+<style>
+  #reference {
+    position: absolute;
+    top: 150px;
+    left: 150px;
+    width: 200px;
+    height: 200px;
+    background-color: red;
+    box-shadow: inset 0 0 0 1px black;
+  }
+
+  #popper {
+    background-color: white;
+    border: 3px solid black;
+    box-sizing: border-box;
+    overflow-y: auto;
+  }
+
+  #popper-content {
+    width: 2000px;
+    height: 1000px;
+    background: linear-gradient(to bottom, teal, purple);
+  }
+</style>
+
+<div id="reference">Reference Box</div>
+<div id="popper">
+  Start
+  <div id="popper-content"></div>
+  End
+</div>
+
+<script type="module">
+  import { createPopper } from './dist/popper.js';
+  import detectOverflow from './dist/utils/detectOverflow.js';
+
+  const applyMaxSize = {
+    name: 'applyMaxSize',
+    enabled: true,
+    phase: 'write',
+    requires: ['maxSize'],
+    fn({ state }) {
+      const { width, height } = state.modifiersData.maxSize;
+
+      state.elements.popper.style.maxWidth = `${width}px`;
+      state.elements.popper.style.maxHeight = `${height}px`;
+    },
+  };
+
+  window.instance = createPopper(reference, popper, {
+    placement: 'right',
+    modifiers: [applyMaxSize],
+  });
+</script>
