@@ -52,3 +52,8 @@ size):
 state.elements.popper.style.maxWidth = `${Math.max(100, width)}px`;
 state.elements.popper.style.maxHeight = `${Math.max(100, height)}px`;
 ```
+
+## Contributing
+
+The source is located in the root package at
+[`src/modifiers/maxSize.js`](https://github.com/atomiks/popper.js/blob/master/src/modifiers/maxSize.js).
