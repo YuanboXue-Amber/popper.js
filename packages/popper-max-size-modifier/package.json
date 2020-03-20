@@ -9,9 +9,6 @@
     "dist/",
     "index.d.ts"
   ],
-  "scripts": {
-    "build": "rollup -c && node ../build-utils/replace-import"
-  },
   "author": "atomiks",
   "license": "MIT",
   "peerDependencies": {
