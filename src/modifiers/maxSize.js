@@ -1,5 +1,5 @@
 // @flow
-import detectOverflow from '../utils/detectOverflow';
+import { detectOverflow } from '../utils/detectOverflow';
 import type { ModifierArguments } from '../types';
 
 export default {

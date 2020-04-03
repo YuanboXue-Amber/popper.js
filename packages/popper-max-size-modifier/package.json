@@ -12,6 +12,6 @@
   "author": "atomiks",
   "license": "MIT",
   "peerDependencies": {
-    "@popperjs/core": "^2.0.0"
+    "@popperjs/core": "^2.2.0"
   }
 }

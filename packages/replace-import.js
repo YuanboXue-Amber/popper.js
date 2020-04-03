@@ -10,9 +10,6 @@ files.forEach(file => {
 
   fs.writeFileSync(
     path,
-    str.replace(
-      '../utils/detectOverflow',
-      '@popperjs/core/lib/utils/detectOverflow'
-    )
+    str.replace(`'../utils/detectOverflow'`, `'@popperjs/core'`)
   );
 });

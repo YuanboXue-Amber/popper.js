@@ -29,7 +29,8 @@ type Options = {
   padding: Padding,
 };
 
-export default function detectOverflow(
+/* eslint-disable */
+export function detectOverflow(
   state: State,
   options: $Shape<Options> = {}
 ): SideObject {
@@ -107,3 +108,5 @@ export default function detectOverflow(
 
   return overflowOffsets;
 }
+
+export default detectOverflow;
