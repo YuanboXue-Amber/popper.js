@@ -25,10 +25,7 @@ export type Window = {|
   Node: Node,
   toString(): '[object Window]',
   devicePixelRatio: number,
-  visualViewport?: {
-    width: number,
-    height: number,
-  },
+  visualViewport?: VisualViewport,
 |};
 
 export type Rect = {|
@@ -55,6 +52,15 @@ export type StateOffsets = {|
   arrow?: Offsets,
 |};
 
+export type VisualViewport = {|
+  width: number,
+  height: number,
+  offsetLeft: number,
+  offsetTop: number,
+  addEventListener(event: string, handler: Function, options?: any): void,
+  removeEventListener(event: string, handler: Function, options?: any): void,
+|};
+
 export type State = {|
   elements: {|
     reference: Element | VirtualElement,
@@ -67,8 +73,8 @@ export type State = {|
   orderedModifiers: Array<Modifier<any>>,
   rects: StateRects,
   scrollParents: {|
-    reference: Array<Element | Window>,
-    popper: Array<Element | Window>,
+    reference: Array<Element | Window | VisualViewport>,
+    popper: Array<Element | Window | VisualViewport>,
   |},
   styles: {|
     [key: string]: $Shape<CSSStyleDeclaration>,
