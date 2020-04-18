@@ -7,8 +7,8 @@ export default {
   enabled: true,
   phase: 'main',
   requiresIfExists: ['offset', 'preventOverflow', 'flip'],
-  fn({ state, name }: ModifierArguments<{}>) {
-    const overflow = detectOverflow(state);
+  fn({ state, name, options }: ModifierArguments<{}>) {
+    const overflow = detectOverflow(state, options);
     const { x, y } = state.modifiersData.preventOverflow || { x: 0, y: 0 };
     const { width, height } = state.rects.popper;
     const [basePlacement] = state.placement.split('-');
