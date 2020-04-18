@@ -23,18 +23,21 @@ https://codesandbox.io/s/great-tesla-3roz7
 import {createPopper} from '@popperjs/core';
 import maxSize from 'popper-max-size-modifier';
 
-// Create your own apply modifier that mutates the popper element's styles:
+// Create your own apply modifier that adds the styles to the state
 const applyMaxSize = {
   name: 'applyMaxSize',
   enabled: true,
-  phase: 'write',
+  phase: 'beforeWrite',
   requires: ['maxSize'],
   fn({state}) {
     // The `maxSize` modifier provides this data
     const {width, height} = state.modifiersData.maxSize;
 
-    state.elements.popper.style.maxWidth = `${width}px`;
-    state.elements.popper.style.maxHeight = `${height}px`;
+    state.styles.popper = {
+      ...state.styles.popper,
+      maxWidth: `${width}px`,
+      maxHeight: `${height}px`
+    };
   }
 };
 
@@ -49,8 +52,29 @@ size):
 
 ```js
 // Minimum acceptable size is 100px
-state.elements.popper.style.maxWidth = `${Math.max(100, width)}px`;
-state.elements.popper.style.maxHeight = `${Math.max(100, height)}px`;
+`${Math.max(100, width)}px`;
+`${Math.max(100, height)}px`;
+```
+
+## Options
+
+All
+[`detectOverflow` options](https://popper.js.org/docs/v2/utils/detect-overflow/#options)
+can be passed.
+
+```js
+createPopper(reference, popper, {
+  modifiers: [
+    {
+      ...maxSize,
+      options: {
+        boundary: customBoundaryElement,
+        padding: 20
+      }
+    },
+    applyMaxSize
+  ]
+});
 ```
 
 ## Contributing
