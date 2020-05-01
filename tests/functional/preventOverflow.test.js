@@ -131,3 +131,14 @@ it('should be inside scroller container', async () => {
 
   expect(await screenshot(page)).toMatchImageSnapshot();
 });
+
+it('should be correctly prevented at the bottom of the document', async () => {
+  const page = await browser.newPage();
+  await page.goto(
+    `${TEST_URL}/modifiers/preventOverflow/rootBoundary-document.html`
+  );
+
+  await scroll(page, 'html', 1500);
+
+  expect(await screenshot(page)).toMatchImageSnapshot();
+});
