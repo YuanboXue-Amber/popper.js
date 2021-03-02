@@ -19,6 +19,14 @@ export default {
     state.modifiersData[name] = {
       width: width - overflow[widthProp] - x,
       height: height - overflow[heightProp] - y,
+      isOverflow:
+        overflow[widthProp] > 0
+          ? overflow[heightProp] > 0
+            ? true
+            : 'width'
+          : overflow[heightProp] > 0
+          ? 'height'
+          : false,
     };
   },
 };
